@@ -26,7 +26,7 @@ $config['appnet_settings']['social_post']			= 'TRUE';
 /* Sites */
 $config['appnet_sites'][] = array(
 	'url'		=> 'http://alpha.app.net/', 
-	'module'	=> 'app-net',
+	'module'	=> 'appnet',
 	'type' 		=> 'remote', 
 	'title'		=> 'App.net', 
 	'favicon'	=> 'http://alpha.app.net/favicon.ico'
