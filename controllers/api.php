@@ -40,82 +40,45 @@ class Api extends Oauth_Controller
 		$this->response($message, 200);
 	} 
 
-	function view_get()
-    {
-    	$this->load->model('data_model');
+	function social_post_authd_post()
+	{
+		if ($connection = $this->social_auth->check_connection_user($this->oauth_user_id, 'appnet', 'primary'))
+		{	
+			// Load Library
+			$req = 'https://alpha-api.app.net/stream/0/posts';
 
-		$data	= $this->data_model->get_data($this->get('id'));    
-   		 	
-        if($data)
-        {
-            $message = array('status' => 'success', 'message' => 'Activity has been found', 'data' => $data);
-        }
-        else
-        {
-            $message = array('status' => 'error', 'message' => 'Could not find any Data');
-        }
+			// Post Update
+			$params = array(
+				'text'			=> $this->input->post('content'), 
+				'reply_to'		=> '',
+				'annotations'	=> '',
+				'links'			=> ''
+			);
 
-        $this->response($message, 200);
-    }
+			$ch = curl_init($req);
+			curl_setopt($ch, CURLOPT_POST, true);
+			$access_token = $connection->auth_one;
+			
+			curl_setopt($ch,CURLOPT_HTTPHEADER,array('Authorization: Bearer '.$access_token));
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-    function create_authd_post()
-    {    
-    	$this->load->model('data_model');
+			$qs = http_build_query($params);
 
-		$data = array(
-			'user_id'	=> $this->oauth_user_id,
-			'text'		=> $this->input->post('text')
-		);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $qs);
+			$response = curl_exec($ch); 
+			
+			curl_close($ch);
+			$response = json_decode($response, true);
 
-		// Add Data
-		if ($add_data = $this->data_model->add_data($data))
+
+			$message = array('status' => 'success', 'message' => 'Posted to App.net successfully', 'data' => $response);
+		}
+		else
 		{
-        	$message = array('status' => 'success', 'message' => 'Data successfully created', 'data' => $add_data);
-        }
-        else
-        {
-	        $message = array('status' => 'error', 'message' => 'Oops unable to add data');
-        }
+			$message = array('status' => 'error', 'message' => 'Oops, could not post to App.net');
+		}
 	
-        $this->response($message, 200);
-    }
-    
-    function update_authd_get()
-    {
-    	$this->load->model('data_model');
-    
-    	$udpate_data = array(
-    		'text'	=> $this->input->post('text')
-    	);
-    
-		$update = $this->social_tools->update_data($this->get('id'), $update_data);			
-    	
-        if($update)
-        {
-            $message = array('status' => 'success', 'message' => 'Data was update');
-        }
-        else
-        {
-            $message = array('status' => 'error', 'message' => 'Could not update data');
-        } 
-
-        $this->response($message, 200);           
-    }  
-
-    function destroy_authd_get()
-    { 
-       	$this->load->model('data_model'); 
-         
-    	if ($this->data_model->delete_data($this->get('id')))
-    	{   	
-    		$message = array('status' => 'success', 'message' => 'Data was deleted');
-    	}
-    	else
-    	{
-    		$message = array('status' => 'error', 'message' => 'Oops Data was not deleted');        	
-    	}
-        
-        $this->response($message, 200);
-    }
+	    $this->response($message, 200);
+	}
 
 }

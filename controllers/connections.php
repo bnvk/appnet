@@ -29,7 +29,7 @@ class Connections extends MY_Controller
         $provider = $this->oauth2->provider('appnet', array(
             'id' 	 => config_item('appnet_client_id'),
             'secret' => config_item('appnet_client_secret'),
-            'scope'	 => 'stream','email','write_post','follow','messages','export'
+            'scope'	 => 'stream, email, write_post, follow, messages, export'
         ));
 
         if (!isset($_GET['code']))
