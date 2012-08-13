@@ -1,0 +1,1 @@
+<li><a class="sidebar_icon" href="<?= base_url() ?>home/appnet"><img src="<?= $this_module_assets ?>appnet_24.png"><span>App.Net</span></a></li>
