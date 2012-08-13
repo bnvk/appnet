@@ -9,7 +9,7 @@
 	
 	<h3>Application Setup</h3>
 
-	<p>App.net requires <a href="https://github.com/appdotnet/api-spec/blob/master/auth.md" target="_blank">registering your application</a>, when prompted enter the following values:</p>
+	<p>App.net requires <a href="https://alpha.app.net/developer/apps/" target="_blank">registering your application</a>, when prompted enter the following values:</p>
 	<table>
 	<tr>
 		<td><strong>Application Name</strong>:</td>
