@@ -17,11 +17,24 @@ class Home extends Dashboard_Controller
 		$this->load->config('appnet');
 
 		$this->data['page_title'] = 'App.Net';
+		
+		if ($connection = $this->social_auth->check_connection_user($this->session->userdata('user_id'), 'appnet', 'primary'))
+		{
+			$this->load->library('appnet_api', array('access_token' =>$connection->auth_one));
+		}
+		else
+		{
+			redirect('settings/connections');	
+		}
 	}
 	
-	function custom()
+	function timeline()
 	{
-		$this->data['sub_title'] = 'Custom';
+		$this->data['sub_title'] = 'Timeline';
+		
+		$timeline = $this->appnet_api->getPublicPosts();
+	
+		print_r($timeline);
 	
 		$this->render();
 	}
