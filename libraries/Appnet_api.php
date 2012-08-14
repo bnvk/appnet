@@ -82,14 +82,18 @@ class Appnet_api {
 		$ch = curl_init($req); 
 		curl_setopt($ch, CURLOPT_POST, false);
 
-		if ($this->_accessToken) {
+		if ($this->_accessToken)
+		{
 			curl_setopt($ch,CURLOPT_HTTPHEADER,array('Authorization: Bearer '.$this->_accessToken));
 		}
+
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		$response = curl_exec($ch); 
 		curl_close($ch);
 		$response = json_decode($response,true);
-		if (isset($response['error'])) {
+
+		if (isset($response['error']))
+		{
 			exit('AppDotNetPHP<br>Error accessing: <br>'.$req.'<br>Error code: '.$response['error']['code']);
 		} else {
 			return $response;
@@ -115,7 +119,9 @@ class Appnet_api {
 		$response = curl_exec($ch); 
 		curl_close($ch);
 		$response = json_decode($response,true);
-		if (isset($response['error'])) {
+
+		if (isset($response['error']))
+		{
 			exit('AppDotNetPHP<br>Error accessing: <br>'.$req.'<br>Error code: '.$response['error']['code']);
 		} else {
 			return $response;
@@ -223,7 +229,7 @@ class Appnet_api {
 	// is similar to the 'Retrieve a User's personalized stream' endpoint.
 	function getUserRealTimeStream()
 	{
-		return $this->httpGet($this->_baseUrl.'posts/stream/global');
+		return $this->httpGet($this->_baseUrl.'streams/public');
 		//return $this->httpGet($this->_baseUrl.'streams/user');
 	}
 
@@ -238,7 +244,7 @@ class Appnet_api {
 	// Retrieve a Stream of all public Posts on App.net.
 	function getPublicPosts()
 	{
-		return $this->httpGet($this->_baseUrl.'posts/stream/global');
+		return $this->httpGet($this->_baseUrl.'streams/public');
 		//return $this->httpGet($this->_baseUrl.'streams/public');
 	}
 
