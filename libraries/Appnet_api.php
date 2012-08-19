@@ -13,20 +13,20 @@
 class Appnet_api {
 
 	// 1.) Enter your Client ID
-	protected $_clientId;
+	public $_clientId;
 
 	// 2.) Enter your Client Secret
-	protected $_clientSecret;
+	public $_clientSecret;
 
 	// 3.) Enter your Callback URL
-	protected $_redirectUri;
+	public $_redirectUri;
 	
 	// 4.) Add or remove scopes
-	protected $_accessToken;
-	protected $_scope;
-	protected $_baseUrl = 'https://alpha-api.app.net/stream/0/';
-	protected $_authSignInUrl;
-	protected $_authPostParams=array();
+	public $_accessToken;
+	public $_scope;
+	public $_baseUrl = 'https://alpha-api.app.net/stream/0/';
+	public $_authSignInUrl;
+	public $_authPostParams=array();
 	
     function __construct($config)
     {
@@ -63,6 +63,7 @@ class Appnet_api {
 		if ($this->_accessToken) {
 			curl_setopt($ch,CURLOPT_HTTPHEADER,array('Authorization: Bearer '.$this->_accessToken));
 		}
+
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		$qs = http_build_query($params);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $qs);
@@ -244,7 +245,7 @@ class Appnet_api {
 	// Retrieve a Stream of all public Posts on App.net.
 	function getPublicPosts()
 	{
-		return $this->httpGet($this->_baseUrl.'streams/public');
+		return $this->httpGet($this->_baseUrl.'posts/stream/global');
 		//return $this->httpGet($this->_baseUrl.'streams/public');
 	}
 

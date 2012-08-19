@@ -41,42 +41,23 @@ class Api extends Oauth_Controller
 	} 
 
 	function social_post_authd_post()
-	{
-		if ($connection = $this->social_auth->check_connection_user($this->oauth_user_id, 'appnet', 'primary'))
-		{	
-			// Load Library
-			$req = 'https://alpha-api.app.net/stream/0/posts';
-
-			// Post Update
-			$params = array(
-				'text'			=> $this->input->post('content'), 
-				'reply_to'		=> '',
-				'annotations'	=> '',
-				'links'			=> ''
+	{	
+        if ($connection = $this->social_auth->check_connection_user($this->oauth_user_id, 'appnet', 'primary'))
+		{
+			$appnet_config = array(
+				'access_token'	=> $connection->auth_one
 			);
 
-			$ch = curl_init($req);
-			curl_setopt($ch, CURLOPT_POST, true);
-			$access_token = $connection->auth_one;
-			
-			curl_setopt($ch,CURLOPT_HTTPHEADER,array('Authorization: Bearer '.$access_token));
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        	$this->load->library('appnet_api', $appnet_config);
 
-			$qs = http_build_query($params);
-
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $qs);
-			$response = curl_exec($ch); 
-			
-			curl_close($ch);
-			$response = json_decode($response, true);
-
+			$response = $this->appnet_api->createPost($this->input->post('content'));
 
 			$message = array('status' => 'success', 'message' => 'Posted to App.net successfully', 'data' => $response);
-		}
-		else
-		{
-			$message = array('status' => 'error', 'message' => 'Oops, could not post to App.net');
-		}
+        }
+        else
+        {
+			$message = array('status' => 'error', 'message' => 'You do not have an App.net account connected');	        
+        }
 	
 	    $this->response($message, 200);
 	}
