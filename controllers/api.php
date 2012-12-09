@@ -13,6 +13,9 @@ class Api extends Oauth_Controller
     function __construct()
     {
         parent::__construct();
+
+		// Get Site Facebook
+		$this->module_site = $this->social_igniter->get_site_view_row('module', 'appnet');
 	}
 
     /* Install App */
@@ -41,7 +44,7 @@ class Api extends Oauth_Controller
 	} 
 
 	function social_post_authd_post()
-	{	
+	{
         if ($connection = $this->social_auth->check_connection_user($this->oauth_user_id, 'appnet', 'primary'))
 		{
 			$appnet_config = array(
@@ -50,15 +53,34 @@ class Api extends Oauth_Controller
 
         	$this->load->library('appnet_api', $appnet_config);
 
-			$response = $this->appnet_api->createPost($this->input->post('content'));
+			$appnet_post = $this->appnet_api->createPost($this->input->post('content'));
 
-			$message = array('status' => 'success', 'message' => 'Posted to App.net successfully', 'data' => $response);
+			if ($appnet_post)
+			{
+				//$appnet_data = json_decode($appnet_post);
+			
+				// Add to Meta				
+				$content_meta = array(
+					'site_id'		=> $this->module_site->site_id,
+					'content_id'	=> $this->input->post('content_id'),
+					'meta'			=> 'appnet_post_id',
+					'value'			=> $appnet_post['id']
+				);
+
+				$this->social_igniter->add_meta($content_meta);
+
+				$message = array('status' => 'success', 'message' => 'Posted to App.net successfully', 'data' => $appnet_post);
+			}
+			else
+			{
+				$message = array('status' => 'error', 'message' => 'Could not post message to App.net', 'data' => $appnet_post);			
+			}
         }
         else
         {
 			$message = array('status' => 'error', 'message' => 'You do not have an App.net account connected');	        
         }
-	
+
 	    $this->response($message, 200);
 	}
 
